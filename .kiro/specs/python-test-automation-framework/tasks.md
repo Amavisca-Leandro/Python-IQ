@@ -51,14 +51,23 @@
     - Documentar cada variável com comentários explicativos
     - _Requirements: 1.5, 12.6_
 
-- [ ] 3. Implementar sistema de configuração centralizada
-  - [ ] 3.1 Criar Settings class com Pydantic BaseSettings
+- [x] 3. Implementar sistema de configuração centralizada
+
+
+
+
+
+
+  - [x] 3.1 Criar Settings class com Pydantic BaseSettings
+
     - Implementar validação de configurações de ambiente
     - Adicionar propriedades calculadas (database_url)
     - Suportar múltiplos ambientes (dev, staging, prod)
     - _Requirements: 1.3, 1.5_
   
-  - [ ] 3.2 Implementar Environment Manager para configurações específicas
+
+  - [x] 3.2 Implementar Environment Manager para configurações específicas
+
     - Criar dataclass Environment com configurações por ambiente
     - Implementar função get_environment() para seleção automática
     - _Requirements: 1.3, 10.4_
