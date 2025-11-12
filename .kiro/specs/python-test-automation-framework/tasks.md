@@ -1,6 +1,11 @@
 # Implementation Plan
 
-- [ ] 1. Setup projeto base e estrutura de diretórios
+- [x] 1. Setup projeto base e estrutura de diretórios
+
+
+
+
+
   - Criar estrutura de pastas conforme design (core/, tests/, fixtures/, scripts/)
   - Configurar ambiente virtual Python 3.11+
   - Criar arquivos de configuração base (.gitignore, README.md)
