@@ -11,18 +11,39 @@
   - Criar arquivos de configuração base (.gitignore, README.md)
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 2. Configurar dependências e ferramentas base
-  - [ ] 2.1 Criar requirements.txt com todas as dependências necessárias
+- [x] 2. Configurar dependências e ferramentas base
+
+
+
+
+
+  - [x] 2.1 Criar requirements.txt com todas as dependências necessárias
+
+
     - Adicionar pytest, requests, playwright, pydantic, sqlalchemy, allure-pytest
     - Incluir dependências de desenvolvimento (black, flake8, mypy)
     - _Requirements: 1.2, 1.4_
   
-  - [ ] 2.2 Configurar pytest.ini com markers e configurações padrão
+
+
+  - [x] 2.2 Configurar pytest.ini com markers e configurações padrão
+
+
+
+
+
+
     - Definir markers (smoke, regression, backend, frontend, slow, integration)
     - Configurar timeouts, logging e opções de execução
+
+
     - _Requirements: 1.4, 10.1, 10.3_
   
+
+
+
   - [ ] 2.3 Criar arquivo .env.example com todas as variáveis necessárias
+
     - Incluir configurações de API, frontend, banco de dados e integrações
     - Documentar cada variável com comentários explicativos
     - _Requirements: 1.5, 12.6_
