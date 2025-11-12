@@ -37,12 +37,15 @@
     - Configurar timeouts, logging e opções de execução
 
 
+
+
     - _Requirements: 1.4, 10.1, 10.3_
   
 
 
 
-  - [ ] 2.3 Criar arquivo .env.example com todas as variáveis necessárias
+  - [x] 2.3 Criar arquivo .env.example com todas as variáveis necessárias
+
 
     - Incluir configurações de API, frontend, banco de dados e integrações
     - Documentar cada variável com comentários explicativos
