@@ -1,0 +1,45 @@
+# Core Testing Framework
+pytest==7.4.3
+pytest-xdist==3.5.0  # Parallel test execution
+pytest-html==4.1.1  # HTML reporting
+pytest-timeout==2.2.0  # Test timeouts
+pytest-rerunfailures==13.0  # Retry failed tests
+
+# API Testing
+requests==2.31.0
+urllib3==2.1.0
+
+# UI Testing
+playwright==1.40.0
+pytest-playwright==0.4.4
+
+# Data Validation and Models
+pydantic==2.5.3
+pydantic-settings==2.1.0
+email-validator==2.1.0
+
+# Database Integration
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9  # PostgreSQL adapter
+alembic==1.13.1  # Database migrations
+
+# Test Data Generation
+faker==21.0.0
+
+# Reporting and Integration
+allure-pytest==2.13.2
+python-dotenv==1.0.0
+
+# HTTP Utilities
+jsonschema==4.20.0
+
+# Development Tools
+black==23.12.1  # Code formatter
+flake8==7.0.0  # Linter
+mypy==1.8.0  # Type checker
+isort==5.13.2  # Import sorter
+pre-commit==3.6.0  # Git hooks
+
+# Type Stubs for Development
+types-requests==2.31.0.10
+types-jsonschema==4.20.0.0
