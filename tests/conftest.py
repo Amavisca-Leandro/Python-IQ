@@ -18,6 +18,8 @@ from core.api.client import APIClient
 from core.database.manager import DatabaseManager
 from core.database.factory import TestDataFactory, TestDataContext
 
+# Import metrics plugin hooks
+pytest_plugins = ["tests.jsonplaceholder.conftest_metrics"]
 
 logger = logging.getLogger(__name__)
 

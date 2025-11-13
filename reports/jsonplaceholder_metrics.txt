@@ -1,0 +1,21 @@
+
+======================================================================
+JSONPlaceholder API Test Metrics Report
+======================================================================
+
+Summary:
+  Total Tests: 93
+  Passed: 93
+  Failed: 0
+  Success Rate: 100.0%
+
+Endpoint Coverage:
+
+Success Rate by Resource:
+  /albums: 11/11 tests (100.0%)
+  /comments: 13/13 tests (100.0%)
+  /posts: 21/21 tests (100.0%)
+  /todos: 18/18 tests (100.0%)
+  /users: 14/14 tests (100.0%)
+
+======================================================================

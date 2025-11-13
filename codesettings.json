@@ -1,0 +1,32 @@
+[1mdiff --git a/README.md b/README.md[m
+[1mindex a0065ac..e56a1b1 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -155,7 +155,26 @@[m [mO arquivo `pytest.ini` contém configurações padrão. Personalize conforme nec[m
+ [m
+ ## 🚀 Execução de Testes[m
+ [m
+[31m-### Executar todos os testes[m
+[32m+[m[32m### 🎯 Test Explorer (Interface Gráfica)[m
+[32m+[m
+[32m+[m[32m**Recomendado para desenvolvimento!** Execute testes com interface visual integrada ao Kiro/VS Code:[m
+[32m+[m
+[32m+[m[32m1. **Abrir Test Explorer:**[m
+[32m+[m[32m   - Clique no ícone 🧪 (Testing) na sidebar esquerda[m
+[32m+[m[32m   - Ou use: `Ctrl+Shift+P` → `Test: Focus on Test Explorer View`[m
+[32m+[m
+[32m+[m[32m2. **Executar testes:**[m
+[32m+[m[32m   - Clique no botão ▶ (play) ao lado de qualquer teste, arquivo ou pasta[m
+[32m+[m[32m   - Use o botão 🐛 (debug) para debugar com breakpoints[m
+[32m+[m
+[32m+[m[32m3. **Ver resultados:**[m
+[32m+[m[32m   - Status visual (✓ verde, ✗ vermelho) inline no código[m
+[32m+[m[32m   - Tempo de execução e mensagens de erro no painel[m
+[32m+[m[32m   - Navegação rápida para falhas[m
+[32m+[m
+[32m+[m[32m📖 **[Guia Completo do Test Explorer](docs/test-explorer-guide.md)** - Setup, troubleshooting e melhores práticas[m
+[32m+[m
+[32m+[m[32m### Executar todos os testes (CLI)[m
+ [m
+ ```bash[m
+ pytest[m

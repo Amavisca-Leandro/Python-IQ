@@ -155,7 +155,26 @@ O arquivo `pytest.ini` contém configurações padrão. Personalize conforme nec
 
 ## 🚀 Execução de Testes
 
-### Executar todos os testes
+### 🎯 Test Explorer (Interface Gráfica)
+
+**Recomendado para desenvolvimento!** Execute testes com interface visual integrada ao Kiro/VS Code:
+
+1. **Abrir Test Explorer:**
+   - Clique no ícone 🧪 (Testing) na sidebar esquerda
+   - Ou use: `Ctrl+Shift+P` → `Test: Focus on Test Explorer View`
+
+2. **Executar testes:**
+   - Clique no botão ▶ (play) ao lado de qualquer teste, arquivo ou pasta
+   - Use o botão 🐛 (debug) para debugar com breakpoints
+
+3. **Ver resultados:**
+   - Status visual (✓ verde, ✗ vermelho) inline no código
+   - Tempo de execução e mensagens de erro no painel
+   - Navegação rápida para falhas
+
+📖 **[Guia Completo do Test Explorer](docs/test-explorer-guide.md)** - Setup, troubleshooting e melhores práticas
+
+### Executar todos os testes (CLI)
 
 ```bash
 pytest

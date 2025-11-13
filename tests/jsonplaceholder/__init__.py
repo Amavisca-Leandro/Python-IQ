@@ -1,0 +1,1 @@
+"""JSONPlaceholder API test suite."""
