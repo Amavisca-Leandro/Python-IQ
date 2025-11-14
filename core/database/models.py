@@ -49,6 +49,45 @@ class User(Base):
         if self.first_name and self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.username
+    
+    def to_dict(self) -> dict:
+        """
+        Convert user to dictionary.
+        
+        Returns:
+            dict: User data as dictionary
+        """
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "is_active": self.is_active,
+            "is_admin": self.is_admin,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+    
+    def activate(self):
+        """Activate user account."""
+        self.is_active = True
+        self.updated_at = datetime.utcnow()
+    
+    def deactivate(self):
+        """Deactivate user account."""
+        self.is_active = False
+        self.updated_at = datetime.utcnow()
+    
+    def make_admin(self):
+        """Grant admin privileges."""
+        self.is_admin = True
+        self.updated_at = datetime.utcnow()
+    
+    def revoke_admin(self):
+        """Revoke admin privileges."""
+        self.is_admin = False
+        self.updated_at = datetime.utcnow()
 
 
 class UserProfile(Base):
@@ -79,3 +118,62 @@ class UserProfile(Base):
     
     def __repr__(self):
         return f"<UserProfile(id={self.id}, user_id={self.user_id}, full_name='{self.full_name}')>"
+    
+    def to_dict(self) -> dict:
+        """
+        Convert profile to dictionary.
+        
+        Returns:
+            dict: Profile data as dictionary
+        """
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "full_name": self.full_name,
+            "phone": self.phone,
+            "address": self.address,
+            "city": self.city,
+            "state": self.state,
+            "country": self.country,
+            "postal_code": self.postal_code,
+            "bio": self.bio,
+            "avatar_url": self.avatar_url,
+            "created_at": self.created_at.isoformat() if self.created_at else None,
+            "updated_at": self.updated_at.isoformat() if self.updated_at else None,
+        }
+    
+    def update_contact_info(self, phone: Optional[str] = None, address: Optional[str] = None):
+        """
+        Update contact information.
+        
+        Args:
+            phone: New phone number
+            address: New address
+        """
+        if phone is not None:
+            self.phone = phone
+        if address is not None:
+            self.address = address
+        self.updated_at = datetime.utcnow()
+    
+    def update_location(
+        self,
+        city: Optional[str] = None,
+        state: Optional[str] = None,
+        postal_code: Optional[str] = None
+    ):
+        """
+        Update location information.
+        
+        Args:
+            city: New city
+            state: New state
+            postal_code: New postal code
+        """
+        if city is not None:
+            self.city = city
+        if state is not None:
+            self.state = state
+        if postal_code is not None:
+            self.postal_code = postal_code
+        self.updated_at = datetime.utcnow()
