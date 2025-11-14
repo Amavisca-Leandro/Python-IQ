@@ -293,20 +293,33 @@
     - Incluir cleanup automático de dados de teste
     - _Requirements: 6.5, 12.1, 12.3_
 
-- [ ] 12. Configurar integração com Allure para reporting
-  - [ ] 12.1 Implementar configuração base do Allure
+- [x] 12. Configurar integração com Allure para reporting
+
+
+
+
+
+
+  - [x] 12.1 Implementar configuração base do Allure
+
+
+
     - Configurar allure-pytest no pytest.ini
     - Criar allure.properties com links para Jira
     - Adicionar categorização por epic, feature, story
     - _Requirements: 8.1, 8.4_
   
-  - [ ] 12.2 Desenvolver helpers para Allure
+  - [x] 12.2 Desenvolver helpers para Allure
+
+
     - Criar decorators para steps (@allure_step)
     - Implementar attach_request_response para APIs
     - Adicionar anexos automáticos de screenshots
     - _Requirements: 8.1, 8.2_
   
-  - [ ] 12.3 Atualizar testes existentes com anotações Allure
+  - [x] 12.3 Atualizar testes existentes com anotações Allure
+
+
     - Adicionar @allure.epic, @allure.feature, @allure.story
     - Incluir steps detalhados nos testes críticos
     - Adicionar links para requirements e Jira tickets
@@ -345,14 +358,22 @@
     - Adicionar notificações Slack em falhas
     - _Requirements: 7.3, 7.4_
 
-- [ ] 15. Implementar sistema de métricas e monitoramento
-  - [ ] 15.1 Configurar coleta de métricas de execução
+- [x] 15. Implementar sistema de métricas e monitoramento
+
+
+
+
+  - [x] 15.1 Configurar coleta de métricas de execução
+
+
     - Implementar tracking de tempo de execução por teste
     - Adicionar coleta de taxa de sucesso e falhas
     - Incluir detecção automática de flakiness
     - _Requirements: 13.1, 13.2_
   
-  - [ ] 15.2 Criar dashboards e relatórios de qualidade
+  - [x] 15.2 Criar dashboards e relatórios de qualidade
+
+
     - Implementar geração de métricas de cobertura
     - Adicionar trends históricos de execução
     - Criar relatórios de ROI da automação
