@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Product Defects",
+    "description": "Test failures caused by actual product bugs",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*AssertionError.*"
+  },
+  {
+    "name": "Test Defects",
+    "description": "Test failures caused by test implementation issues",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*(AttributeError|TypeError|ValueError).*"
+  },
+  {
+    "name": "Infrastructure Issues",
+    "description": "Test failures caused by infrastructure or environment problems",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*(ConnectionError|TimeoutError|HTTPError).*"
+  },
+  {
+    "name": "Database Issues",
+    "description": "Test failures related to database connectivity or data issues",
+    "matchedStatuses": ["broken"],
+    "messageRegex": ".*(DatabaseError|OperationalError|IntegrityError).*"
+  },
+  {
+    "name": "Authentication Failures",
+    "description": "Test failures related to authentication or authorization",
+    "matchedStatuses": ["failed", "broken"],
+    "messageRegex": ".*(401|403|Unauthorized|Forbidden).*"
+  },
+  {
+    "name": "Validation Errors",
+    "description": "Test failures related to data validation",
+    "matchedStatuses": ["failed"],
+    "messageRegex": ".*ValidationError.*"
+  },
+  {
+    "name": "Flaky Tests",
+    "description": "Tests that pass and fail intermittently",
+    "matchedStatuses": ["failed"],
+    "flaky": true
+  }
+]
