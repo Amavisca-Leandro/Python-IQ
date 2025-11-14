@@ -18,10 +18,13 @@ from core.api.client import APIClient
 from core.database.manager import DatabaseManager
 from core.database.factory import TestDataFactory, TestDataContext
 
-# Import metrics plugin hooks
+# Import metrics plugin hooks and test-specific fixtures
+# NOTE: tests.bdd.conftest is automatically loaded by pytest when running BDD tests
+# and should NOT be registered here to avoid "Plugin already registered" errors
 pytest_plugins = [
     "tests.jsonplaceholder.conftest_metrics",
-    "core.helpers.pytest_metrics_plugin"
+    "tests.jsonplaceholder.conftest",  # JSONPlaceholder client and fixtures
+    "core.helpers.pytest_metrics_plugin",
 ]
 
 logger = logging.getLogger(__name__)
@@ -323,23 +326,23 @@ def isolated_test_data(
 ):
     """
     Provide isolated test data with database session.
-    
+
     Scope: function - Combines test data context with database session
-    
+
     This fixture provides both test data context and database session
     for tests that need to create and verify data in the database.
-    
+
     Args:
         test_data_context: Test data context fixture
         db_session: Database session fixture
-        
+
     Yields:
         tuple: (TestDataContext, Session)
-        
+
     Example:
         >>> def test_user_in_database(isolated_test_data):
         ...     context, session = isolated_test_data
-        ...     
+        ...
         ...     # Create user in database
         ...     user = User(
         ...         username=f"test_{context.test_id}",
@@ -347,14 +350,53 @@ def isolated_test_data(
         ...     )
         ...     session.add(user)
         ...     session.flush()
-        ...     
+        ...
         ...     # Register for cleanup
         ...     context.register_entity('User', user.id)
-        ...     
+        ...
         ...     # Verify user exists
         ...     assert user.id is not None
     """
     yield test_data_context, db_session
+
+
+# ============================================================================
+# BDD CONTEXT FIXTURE (imported from tests.bdd.conftest for global availability)
+# ============================================================================
+
+# Import BDDContext class
+import sys
+from pathlib import Path
+bdd_conftest_path = Path(__file__).parent / "bdd" / "conftest.py"
+if bdd_conftest_path.exists():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("bdd_conftest_module", bdd_conftest_path)
+    if spec and spec.loader:
+        bdd_conftest_module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(bdd_conftest_module)
+        BDDContext = bdd_conftest_module.BDDContext
+
+
+@pytest.fixture(scope="function")
+def bdd_context(request):
+    """
+    Provide BDD context for sharing data between steps.
+
+    This fixture creates a new BDDContext instance for each test scenario,
+    ensuring data isolation between scenarios. The context is automatically
+    cleaned up after the scenario completes.
+
+    Scope: function - New context for each scenario
+
+    Yields:
+        BDDContext: Context object for the scenario
+    """
+    try:
+        context = BDDContext()
+        logger.info(f"BDD context created for test: {request.node.name}")
+        yield context
+    finally:
+        logger.debug(f"BDD context cleaned up for test: {request.node.name}")
 
 
 # ============================================================================

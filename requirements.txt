@@ -5,6 +5,12 @@ pytest-html==4.1.1  # HTML reporting
 pytest-timeout==2.2.0  # Test timeouts
 pytest-rerunfailures==13.0  # Retry failed tests
 
+# BDD (Behavior-Driven Development)
+# pytest-bdd enables writing tests in Gherkin syntax (Given-When-Then)
+# Compatible with pytest 7.x, integrates with allure-pytest for reporting
+# Allows business-readable test scenarios for better collaboration
+pytest-bdd==7.0.1
+
 # API Testing
 requests==2.31.0
 urllib3==2.1.0
