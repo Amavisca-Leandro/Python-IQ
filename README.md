@@ -19,6 +19,7 @@ Framework completo de automação de testes funcionais usando Python, suportando
 
 - **Testes de Backend (API)**: Cliente HTTP robusto com retry automático e autenticação
 - **Testes de Frontend (UI)**: Automação com Playwright e Page Objects
+- **🥒 BDD (Behavior-Driven Development)**: Escreva testes em Gherkin para colaboração entre técnicos e não-técnicos
 - **Integração com Banco de Dados**: SQLAlchemy ORM para criação de massa de dados e validações
 - **Validação de Dados**: Modelos Pydantic para type safety e validação
 - **📊 Reporting Avançado**: Relatórios interativos com Allure (dashboard, steps, screenshots, histórico)
@@ -55,6 +56,7 @@ Framework completo de automação de testes funcionais usando Python, suportando
 
 - **[INICIO_RAPIDO.md](INICIO_RAPIDO.md)** - Guia visual passo a passo
 - **[COMO_EXECUTAR_TESTES.md](COMO_EXECUTAR_TESTES.md)** - Todas as formas de executar
+- **[tests/bdd/README.md](tests/bdd/README.md)** 🥒 - BDD com Gherkin - Guia Completo
 - **[GERAR_RELATORIOS_RAPIDO.md](GERAR_RELATORIOS_RAPIDO.md)** 📊 - Como gerar relatórios
 - **[docs/ALLURE_QUICK_START.md](docs/ALLURE_QUICK_START.md)** 🎯 - Allure Reports - Guia Rápido
 - **[docs/ALLURE_GUIDE.md](docs/ALLURE_GUIDE.md)** 📈 - Allure Reports - Guia Completo
@@ -130,6 +132,10 @@ qa-automation/
 │   ├── backend/            # Testes de API
 │   ├── frontend/           # Testes de UI
 │   ├── integration/        # Testes end-to-end
+│   ├── bdd/                # Testes BDD com Gherkin
+│   │   ├── features/       # Arquivos .feature
+│   │   ├── steps/          # Step definitions
+│   │   └── README.md       # Documentação BDD
 │   └── conftest.py         # Fixtures globais
 ├── fixtures/               # Dados de teste
 │   ├── sql/                # Scripts SQL
@@ -256,6 +262,61 @@ pytest --alluredir=allure-results
 # Gerar e abrir relatório
 allure serve allure-results
 ```
+
+## 🥒 BDD (Behavior-Driven Development)
+
+O framework suporta testes escritos em **Gherkin** usando pytest-bdd, permitindo que stakeholders técnicos e não-técnicos colaborem na definição de cenários de teste.
+
+### 🚀 Início Rápido com BDD
+
+```gherkin
+# tests/bdd/features/api/posts.feature
+@smoke @api
+Feature: JSONPlaceholder Posts API
+  As a QA engineer
+  I want to test the Posts API
+  So that I can ensure it works correctly
+
+  Scenario: Get all posts
+    Given the API client is configured
+    When I send a GET request to "/posts"
+    Then the response status code should be 200
+    And the response should be a non-empty list
+```
+
+### Executar Testes BDD
+
+```bash
+# Todos os testes BDD
+pytest tests/bdd/
+
+# Por feature
+pytest tests/bdd/features/api/posts.feature
+
+# Por tag
+pytest tests/bdd/ -m smoke
+
+# Com Test Explorer
+# Clique no ▶️ ao lado de qualquer scenario no Test Explorer
+```
+
+### Recursos BDD
+
+- ✅ **Sintaxe Gherkin**: Given-When-Then para cenários legíveis
+- ✅ **Step Definitions Reutilizáveis**: Biblioteca de steps para API, Database e Assertions
+- ✅ **Integração com Fixtures**: Usa api_client, db_manager e outros fixtures existentes
+- ✅ **Allure Reports**: Scenarios aparecem como test cases no dashboard
+- ✅ **Test Explorer**: Execute e debug scenarios visualmente
+- ✅ **Scenario Outlines**: Execute o mesmo cenário com múltiplos dados
+- ✅ **Execução Paralela**: Suporte a pytest-xdist
+
+### 📚 Documentação Completa
+
+**[tests/bdd/README.md](tests/bdd/README.md)** - Guia completo de BDD incluindo:
+- Como escrever feature files
+- Como criar step definitions
+- Exemplos de integração com API e Database
+- Melhores práticas e convenções
 
 ## 📊 Reporting
 
