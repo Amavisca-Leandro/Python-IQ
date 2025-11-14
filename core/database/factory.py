@@ -241,6 +241,9 @@ class TestDataFactory:
         """
         Cleanup all test data for a specific test.
         
+        This method deletes all tracked entities from the database in
+        reverse order to respect foreign key constraints.
+        
         Args:
             test_id: Test identifier
         """
@@ -260,18 +263,256 @@ class TestDataFactory:
         
         logger.info(f"Cleaning up test data for test {test_id}")
         
-        # Cleanup via database manager if available
+        # Cleanup via database if available
         if self.db_manager:
             try:
-                self.db_manager.cleanup_by_test_id(test_id)
+                self._cleanup_database_entities(test_id, context)
             except Exception as e:
-                logger.error(f"Error during cleanup for test {test_id}: {e}")
+                logger.error(f"Error during database cleanup for test {test_id}: {e}")
         
         # Clear tracking
         context.clear()
         del self.created_entities[test_id]
         
         logger.info(f"Cleanup completed for test {test_id}")
+    
+    def _cleanup_database_entities(self, test_id: str, context: TestDataContext):
+        """
+        Cleanup database entities in reverse order.
+        
+        Args:
+            test_id: Test identifier
+            context: Test data context
+        """
+        from core.database.models import User, UserProfile
+        
+        # Define cleanup order (reverse of creation to respect FK constraints)
+        cleanup_order = [
+            ('UserProfile', UserProfile),
+            ('User', User),
+            # Add more models here as needed
+        ]
+        
+        with self.db_manager.get_session() as session:
+            for entity_type, model_class in cleanup_order:
+                entity_ids = context.get_entities(entity_type)
+                
+                if not entity_ids:
+                    continue
+                
+                try:
+                    # Delete entities
+                    deleted_count = session.query(model_class).filter(
+                        model_class.id.in_(entity_ids)
+                    ).delete(synchronize_session=False)
+                    
+                    logger.debug(
+                        f"Deleted {deleted_count} {entity_type} entities "
+                        f"for test {test_id}"
+                    )
+                except Exception as e:
+                    logger.error(
+                        f"Error deleting {entity_type} entities "
+                        f"for test {test_id}: {e}"
+                    )
+                    # Continue with other entities even if one fails
+            
+            # Commit all deletions
+            session.commit()
+            logger.debug(f"Database cleanup committed for test {test_id}")
+    
+    def create_user_with_profile(
+        self,
+        test_id: str,
+        **overrides
+    ) -> Dict[str, Any]:
+        """
+        Create complete user with profile using database.
+        
+        This method creates a user and associated profile in the database,
+        tracks them for cleanup, and returns both instances.
+        
+        Args:
+            test_id: Test identifier
+            **overrides: Override default values (can include 'profile' dict for profile overrides)
+            
+        Returns:
+            Dict[str, Any]: Dictionary with 'user' and 'profile' keys
+            
+        Example:
+            >>> result = factory.create_user_with_profile(
+            ...     test_id="test_123",
+            ...     email="custom@example.com",
+            ...     profile={"phone": "+5511999999999"}
+            ... )
+            >>> user = result['user']
+            >>> profile = result['profile']
+        """
+        if not self.db_manager:
+            raise ValueError("DatabaseManager is required for create_user_with_profile")
+        
+        # Import models here to avoid circular imports
+        from core.database.models import User, UserProfile
+        
+        # Extract profile overrides
+        profile_overrides = overrides.pop('profile', {})
+        
+        # Create user data
+        user_data = self.create_user_data(test_id, **overrides)
+        
+        # Create user in database
+        with self.db_manager.get_session() as session:
+            # Create user
+            user = User(**user_data)
+            session.add(user)
+            session.flush()  # Get user.id
+            
+            # Register user for cleanup
+            self._register_for_cleanup(test_id, 'User', user.id)
+            
+            # Create profile data
+            profile_data = self.create_profile_data(
+                test_id,
+                user_id=user.id,
+                **profile_overrides
+            )
+            
+            # Create profile
+            profile = UserProfile(**profile_data)
+            session.add(profile)
+            session.flush()
+            
+            # Register profile for cleanup
+            self._register_for_cleanup(test_id, 'UserProfile', profile.id)
+            
+            # Refresh to get all database values
+            session.refresh(user)
+            session.refresh(profile)
+            
+            logger.info(
+                f"Created user with profile for test {test_id}: "
+                f"user_id={user.id}, profile_id={profile.id}"
+            )
+            
+            # Return as dictionary to avoid session issues
+            return {
+                'user': user,
+                'profile': profile,
+                'user_id': user.id,
+                'profile_id': profile.id,
+                'username': user.username,
+                'email': user.email,
+            }
+    
+    def create_multiple_users(
+        self,
+        test_id: str,
+        count: int = 3,
+        with_profiles: bool = True
+    ) -> List[Dict[str, Any]]:
+        """
+        Create multiple users for bulk testing scenarios.
+        
+        Args:
+            test_id: Test identifier
+            count: Number of users to create
+            with_profiles: Whether to create profiles for each user
+            
+        Returns:
+            List[Dict[str, Any]]: List of created user data
+            
+        Example:
+            >>> users = factory.create_multiple_users(
+            ...     test_id="test_123",
+            ...     count=5,
+            ...     with_profiles=True
+            ... )
+            >>> assert len(users) == 5
+        """
+        users = []
+        
+        for i in range(count):
+            if with_profiles:
+                user_data = self.create_user_with_profile(
+                    test_id=test_id,
+                    username=f"{self.settings.test_data_prefix}user_{i}_{test_id}"
+                )
+            else:
+                if not self.db_manager:
+                    raise ValueError("DatabaseManager is required for create_multiple_users")
+                
+                from core.database.models import User
+                
+                user_dict = self.create_user_data(
+                    test_id=test_id,
+                    username=f"{self.settings.test_data_prefix}user_{i}_{test_id}"
+                )
+                
+                with self.db_manager.get_session() as session:
+                    user = User(**user_dict)
+                    session.add(user)
+                    session.flush()
+                    session.refresh(user)
+                    
+                    self._register_for_cleanup(test_id, 'User', user.id)
+                    
+                    user_data = {
+                        'user': user,
+                        'user_id': user.id,
+                        'username': user.username,
+                        'email': user.email,
+                    }
+            
+            users.append(user_data)
+        
+        logger.info(f"Created {count} users for test {test_id}")
+        
+        return users
+    
+    def create_complete_order_scenario(
+        self,
+        test_id: str,
+        user_id: Optional[int] = None,
+        **overrides
+    ) -> Dict[str, Any]:
+        """
+        Create complete order scenario with user, items, and payment.
+        
+        This is a placeholder for complex scenarios. Implement based on
+        your application's domain model.
+        
+        Args:
+            test_id: Test identifier
+            user_id: Existing user ID (creates new user if not provided)
+            **overrides: Override default values
+            
+        Returns:
+            Dict[str, Any]: Complete order scenario data
+            
+        Example:
+            >>> scenario = factory.create_complete_order_scenario(
+            ...     test_id="test_123",
+            ...     order_total=100.00
+            ... )
+        """
+        # Create user if not provided
+        if user_id is None:
+            user_data = self.create_user_with_profile(test_id)
+            user_id = user_data['user_id']
+        
+        # This is a placeholder - implement based on your domain model
+        scenario_data = {
+            'test_id': test_id,
+            'user_id': user_id,
+            'order_id': None,  # Would be created in actual implementation
+            'items': [],  # Would contain order items
+            'payment': None,  # Would contain payment info
+            **overrides
+        }
+        
+        logger.info(f"Created order scenario for test {test_id} with user_id={user_id}")
+        
+        return scenario_data
     
     def get_test_context(self, test_id: str) -> Optional[TestDataContext]:
         """
