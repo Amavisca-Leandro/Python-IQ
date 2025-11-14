@@ -21,13 +21,15 @@ logger = logging.getLogger(__name__)
 class TestDataContext:
     """
     Context for test data with unique identifier and tracking.
-    
+
     Attributes:
         test_id: Unique identifier for the test
         created_entities: Dictionary tracking created entities by type
         cleanup_required: Whether cleanup is needed
     """
-    
+
+    __test__ = False  # Tell pytest this is not a test class
+
     def __init__(self, test_id: Optional[str] = None):
         """
         Initialize test data context.
@@ -88,24 +90,26 @@ class TestDataContext:
 class TestDataFactory:
     """
     Factory for creating test data with automatic tracking and cleanup.
-    
+
     Features:
     - Factory pattern for consistent data creation
     - Faker integration for realistic test data
     - Automatic entity tracking for cleanup
     - Support for complex data scenarios
     - Brazilian locale support
-    
+
     Example:
         >>> factory = TestDataFactory(db_manager)
         >>> user_data = factory.create_user_data(test_id="test_123")
         >>> print(user_data['email'])
     """
-    
+
+    __test__ = False  # Tell pytest this is not a test class
+
     def __init__(self, db_manager: Any = None):
         """
         Initialize test data factory.
-        
+
         Args:
             db_manager: DatabaseManager instance (optional)
         """

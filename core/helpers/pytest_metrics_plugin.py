@@ -89,7 +89,7 @@ class MetricsPlugin:
             # Check for flaky tests
             flaky_tests = self.collector.get_flaky_tests()
             if flaky_tests:
-                print("\n⚠️  FLAKY TESTS DETECTED:")
+                print("\nWARNING: FLAKY TESTS DETECTED:")
                 for flaky in flaky_tests[:5]:  # Show top 5
                     print(f"  - {flaky.test_name}")
                     print(f"    Flakiness Rate: {flaky.flakiness_rate * 100}%")
