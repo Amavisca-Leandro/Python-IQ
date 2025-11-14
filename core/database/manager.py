@@ -219,6 +219,42 @@ class DatabaseManager:
             
             return exists
     
+    def create_test_data(
+        self,
+        model_class: Any,
+        data: Dict[str, Any]
+    ) -> Any:
+        """
+        Create test data using ORM model.
+        
+        Args:
+            model_class: SQLAlchemy model class
+            data: Data dictionary for model creation
+            
+        Returns:
+            Any: Created model instance
+            
+        Example:
+            >>> user = db_manager.create_test_data(
+            ...     User,
+            ...     {"username": "test", "email": "test@example.com"}
+            ... )
+            >>> assert user.id is not None
+        """
+        with self.get_session() as session:
+            instance = model_class(**data)
+            session.add(instance)
+            session.flush()
+            
+            # Refresh to get all database-generated values
+            session.refresh(instance)
+            
+            logger.debug(
+                f"Created {model_class.__name__} instance with id: {instance.id}"
+            )
+            
+            return instance
+    
     def cleanup_by_test_id(self, test_id: str):
         """
         Cleanup test data by test ID.
