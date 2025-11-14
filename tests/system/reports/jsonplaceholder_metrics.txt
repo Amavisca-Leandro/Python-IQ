@@ -1,0 +1,16 @@
+
+======================================================================
+JSONPlaceholder API Test Metrics Report
+======================================================================
+
+Summary:
+  Total Tests: 7
+  Passed: 2
+  Failed: 5
+  Success Rate: 28.6%
+
+Endpoint Coverage:
+
+Success Rate by Resource:
+
+======================================================================
