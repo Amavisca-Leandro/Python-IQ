@@ -19,7 +19,10 @@ from core.database.manager import DatabaseManager
 from core.database.factory import TestDataFactory, TestDataContext
 
 # Import metrics plugin hooks
-pytest_plugins = ["tests.jsonplaceholder.conftest_metrics"]
+pytest_plugins = [
+    "tests.jsonplaceholder.conftest_metrics",
+    "core.helpers.pytest_metrics_plugin"
+]
 
 logger = logging.getLogger(__name__)
 
