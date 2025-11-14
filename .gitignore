@@ -44,6 +44,9 @@ allure-results/
 allure-report/
 reports/allure/
 
+# Metrics Reports (generated files)
+reports/metrics/
+
 # Playwright
 playwright-report/
 test-results/
