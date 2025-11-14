@@ -17,6 +17,7 @@ Requirements covered:
 - 5.1, 5.2: Schema and type validation
 """
 
+import allure
 import pytest
 from core.helpers.validators import (
     validate_response_status,
@@ -31,6 +32,10 @@ from core.clients.jsonplaceholder_schemas import POST_SCHEMA
 # GET TESTS
 # ============================================================================
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Posts - List All")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("GET /posts returns 200 and list of posts")
 @pytest.mark.smoke
 def test_get_posts_returns_200_and_list(jsonplaceholder_client):
     """
@@ -38,18 +43,20 @@ def test_get_posts_returns_200_and_list(jsonplaceholder_client):
     
     Requirements: 1.1, 5.1
     """
-    response = jsonplaceholder_client.get_posts()
+    with allure.step("Send GET request to /posts"):
+        response = jsonplaceholder_client.get_posts()
     
-    # Validate status code
-    validate_response_status(response, 200)
+    with allure.step("Validate status code is 200"):
+        validate_response_status(response, 200)
     
-    # Validate Content-Type
-    assert "application/json" in response.headers.get("Content-Type", "")
+    with allure.step("Validate Content-Type header"):
+        assert "application/json" in response.headers.get("Content-Type", "")
     
-    # Validate response is a list
-    posts = response.json()
-    assert isinstance(posts, list), "Response should be a list"
-    assert len(posts) > 0, "Posts list should not be empty"
+    with allure.step("Validate response is a non-empty list"):
+        posts = response.json()
+        assert isinstance(posts, list), "Response should be a list"
+        assert len(posts) > 0, "Posts list should not be empty"
+        allure.attach(str(len(posts)), "Total Posts", allure.attachment_type.TEXT)
 
 
 @pytest.mark.smoke

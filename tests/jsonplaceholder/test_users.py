@@ -16,6 +16,7 @@ Requirements covered:
 - 5.1, 5.3, 5.5: Schema and field validation
 """
 
+import allure
 import pytest
 from core.helpers.validators import (
     validate_response_status,
@@ -31,6 +32,10 @@ from tests.jsonplaceholder.conftest import validate_email_format
 # GET TESTS
 # ============================================================================
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Users - List All")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("GET /users returns 200 and exactly 10 users")
 @pytest.mark.smoke
 def test_get_users_returns_200_and_exactly_10_users(jsonplaceholder_client):
     """
@@ -38,20 +43,26 @@ def test_get_users_returns_200_and_exactly_10_users(jsonplaceholder_client):
     
     Requirements: 1.3, 5.1
     """
-    response = jsonplaceholder_client.get_users()
+    with allure.step("Send GET request to /users"):
+        response = jsonplaceholder_client.get_users()
     
-    # Validate status code
-    validate_response_status(response, 200)
+    with allure.step("Validate status code is 200"):
+        validate_response_status(response, 200)
     
-    # Validate Content-Type
-    assert "application/json" in response.headers.get("Content-Type", "")
+    with allure.step("Validate Content-Type header"):
+        assert "application/json" in response.headers.get("Content-Type", "")
     
-    # Validate response is a list with exactly 10 users
-    users = response.json()
-    assert isinstance(users, list), "Response should be a list"
-    assert len(users) == 10, f"Expected exactly 10 users, got {len(users)}"
+    with allure.step("Validate response contains exactly 10 users"):
+        users = response.json()
+        assert isinstance(users, list), "Response should be a list"
+        assert len(users) == 10, f"Expected exactly 10 users, got {len(users)}"
+        allure.attach(str(len(users)), "Total Users", allure.attachment_type.TEXT)
 
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Users - Get by ID")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("GET /users/{id} returns specific user")
 @pytest.mark.smoke
 def test_get_user_by_id_returns_specific_user(jsonplaceholder_client):
     """
@@ -60,22 +71,26 @@ def test_get_user_by_id_returns_specific_user(jsonplaceholder_client):
     Requirements: 1.4, 5.1
     """
     user_id = 1
-    response = jsonplaceholder_client.get_user(user_id)
     
-    # Validate status code
-    validate_response_status(response, 200)
+    with allure.step(f"Send GET request to /users/{user_id}"):
+        response = jsonplaceholder_client.get_user(user_id)
     
-    # Validate Content-Type
-    assert "application/json" in response.headers.get("Content-Type", "")
+    with allure.step("Validate status code is 200"):
+        validate_response_status(response, 200)
     
-    # Validate response structure
-    user = response.json()
-    assert isinstance(user, dict), "Response should be a dictionary"
+    with allure.step("Validate Content-Type header"):
+        assert "application/json" in response.headers.get("Content-Type", "")
     
-    # Validate the ID matches
-    assert user["id"] == user_id, f"User ID should be {user_id}"
+    with allure.step("Validate response structure and user ID"):
+        user = response.json()
+        assert isinstance(user, dict), "Response should be a dictionary"
+        assert user["id"] == user_id, f"User ID should be {user_id}"
 
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Users - Validation")
+@allure.severity(allure.severity_level.NORMAL)
+@allure.title("GET /users validates required fields")
 @pytest.mark.validation
 def test_get_users_validates_required_fields(jsonplaceholder_client):
     """
@@ -83,18 +98,18 @@ def test_get_users_validates_required_fields(jsonplaceholder_client):
     
     Requirements: 1.4, 5.3
     """
-    response = jsonplaceholder_client.get_users()
-    validate_response_status(response, 200)
+    with allure.step("Send GET request to /users"):
+        response = jsonplaceholder_client.get_users()
+        validate_response_status(response, 200)
     
-    users = response.json()
-    assert len(users) > 0, "Should have at least one user"
+    with allure.step("Validate users list is not empty"):
+        users = response.json()
+        assert len(users) > 0, "Should have at least one user"
     
-    # Validate required fields for first user
-    user = users[0]
-    validate_required_fields(user, ["id", "name", "username", "email", "address"])
-    
-    # Validate address is an object
-    assert isinstance(user["address"], dict), "Address should be a dictionary"
+    with allure.step("Validate required fields presence"):
+        user = users[0]
+        validate_required_fields(user, ["id", "name", "username", "email", "address"])
+        assert isinstance(user["address"], dict), "Address should be a dictionary"
 
 
 @pytest.mark.validation
@@ -226,6 +241,10 @@ def test_get_nonexistent_user_returns_404(jsonplaceholder_client):
 # CRUD TESTS (POST, PUT, DELETE)
 # ============================================================================
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Users - Create")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("POST /users creates user with complete data")
 @pytest.mark.crud
 def test_create_user_with_complete_data_returns_201(jsonplaceholder_client, sample_user_data):
     """
@@ -233,28 +252,34 @@ def test_create_user_with_complete_data_returns_201(jsonplaceholder_client, samp
     
     Requirements: 2.4
     """
-    response = jsonplaceholder_client.create_user(sample_user_data)
+    with allure.step("Prepare user data"):
+        allure.attach(str(sample_user_data), "User Data", allure.attachment_type.JSON)
     
-    # Validate status code
-    validate_response_status(response, 201)
+    with allure.step("Send POST request to /users"):
+        response = jsonplaceholder_client.create_user(sample_user_data)
     
-    # Validate Content-Type
-    assert "application/json" in response.headers.get("Content-Type", "")
+    with allure.step("Validate status code is 201"):
+        validate_response_status(response, 201)
     
-    # Validate response contains created user data
-    user = response.json()
-    assert isinstance(user, dict), "Response should be a dictionary"
+    with allure.step("Validate Content-Type header"):
+        assert "application/json" in response.headers.get("Content-Type", "")
     
-    # Validate ID was generated
-    assert "id" in user, "Response should contain generated ID"
-    assert isinstance(user["id"], int), "ID should be an integer"
+    with allure.step("Validate response contains created user"):
+        user = response.json()
+        assert isinstance(user, dict), "Response should be a dictionary"
+        assert "id" in user, "Response should contain generated ID"
+        assert isinstance(user["id"], int), "ID should be an integer"
     
-    # Validate sent data is reflected in response
-    assert user["name"] == sample_user_data["name"]
-    assert user["username"] == sample_user_data["username"]
-    assert user["email"] == sample_user_data["email"]
+    with allure.step("Verify user data matches request"):
+        assert user["name"] == sample_user_data["name"]
+        assert user["username"] == sample_user_data["username"]
+        assert user["email"] == sample_user_data["email"]
 
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Users - Update")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("PUT /users/{id} updates user successfully")
 @pytest.mark.crud
 def test_update_user_with_put_returns_200(jsonplaceholder_client, sample_user_data):
     """
@@ -263,27 +288,34 @@ def test_update_user_with_put_returns_200(jsonplaceholder_client, sample_user_da
     Requirements: 3.5
     """
     user_id = 1
-    response = jsonplaceholder_client.update_user(user_id, sample_user_data)
     
-    # Validate status code
-    validate_response_status(response, 200)
+    with allure.step(f"Prepare update data for user {user_id}"):
+        allure.attach(str(sample_user_data), "Update Data", allure.attachment_type.JSON)
     
-    # Validate Content-Type
-    assert "application/json" in response.headers.get("Content-Type", "")
+    with allure.step(f"Send PUT request to /users/{user_id}"):
+        response = jsonplaceholder_client.update_user(user_id, sample_user_data)
     
-    # Validate response contains updated user data
-    user = response.json()
-    assert isinstance(user, dict), "Response should be a dictionary"
+    with allure.step("Validate status code is 200"):
+        validate_response_status(response, 200)
     
-    # Validate ID matches
-    assert user["id"] == user_id, f"User ID should be {user_id}"
+    with allure.step("Validate Content-Type header"):
+        assert "application/json" in response.headers.get("Content-Type", "")
     
-    # Validate updated data is reflected in response
-    assert user["name"] == sample_user_data["name"]
-    assert user["username"] == sample_user_data["username"]
-    assert user["email"] == sample_user_data["email"]
+    with allure.step("Validate response contains updated user"):
+        user = response.json()
+        assert isinstance(user, dict), "Response should be a dictionary"
+        assert user["id"] == user_id, f"User ID should be {user_id}"
+    
+    with allure.step("Verify updated data matches request"):
+        assert user["name"] == sample_user_data["name"]
+        assert user["username"] == sample_user_data["username"]
+        assert user["email"] == sample_user_data["email"]
 
 
+@allure.feature("JSONPlaceholder API")
+@allure.story("Users - Delete")
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("DELETE /users/{id} removes user successfully")
 @pytest.mark.crud
 def test_delete_user_returns_200(jsonplaceholder_client):
     """
@@ -292,14 +324,16 @@ def test_delete_user_returns_200(jsonplaceholder_client):
     Requirements: 4.3
     """
     user_id = 1
-    response = jsonplaceholder_client.delete_user(user_id)
     
-    # Validate status code
-    validate_response_status(response, 200)
+    with allure.step(f"Send DELETE request to /users/{user_id}"):
+        response = jsonplaceholder_client.delete_user(user_id)
     
-    # Validate Content-Type
-    assert "application/json" in response.headers.get("Content-Type", "")
+    with allure.step("Validate status code is 200"):
+        validate_response_status(response, 200)
     
-    # Validate response (JSONPlaceholder returns empty object on delete)
-    data = response.json()
-    assert isinstance(data, dict), "Response should be a dictionary"
+    with allure.step("Validate Content-Type header"):
+        assert "application/json" in response.headers.get("Content-Type", "")
+    
+    with allure.step("Validate response structure"):
+        data = response.json()
+        assert isinstance(data, dict), "Response should be a dictionary"
