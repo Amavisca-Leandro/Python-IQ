@@ -8,6 +8,7 @@ Framework completo de automação de testes funcionais usando Python, suportando
 - [Requisitos](#requisitos)
 - [Instalação](#instalação)
 - [🚀 Início Rápido - Execute Testes SEM Linha de Comando](#-início-rápido---execute-testes-sem-linha-de-comando)
+- [🎯 Projetos Ativos](#-projetos-ativos)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Configuração](#configuração)
 - [Execução de Testes](#execução-de-testes)
@@ -54,15 +55,84 @@ Framework completo de automação de testes funcionais usando Python, suportando
 
 ### 📚 Guias Completos
 
-- **[INICIO_RAPIDO.md](INICIO_RAPIDO.md)** - Guia visual passo a passo
-- **[COMO_EXECUTAR_TESTES.md](COMO_EXECUTAR_TESTES.md)** - Todas as formas de executar
+- **[INICIO_RAPIDO.md](docs/getting-started/INICIO_RAPIDO.md)** - Guia visual passo a passo
+- **[COMO_EXECUTAR_TESTES.md](docs/getting-started/COMO_EXECUTAR_TESTES.md)** - Todas as formas de executar
 - **[tests/bdd/README.md](tests/bdd/README.md)** 🥒 - BDD com Gherkin - Guia Completo
-- **[GERAR_RELATORIOS_RAPIDO.md](GERAR_RELATORIOS_RAPIDO.md)** 📊 - Como gerar relatórios
+- **[COMO_GERAR_RELATORIOS.md](docs/reporting/COMO_GERAR_RELATORIOS.md)** 📊 - Como gerar relatórios
 - **[docs/ALLURE_QUICK_START.md](docs/ALLURE_QUICK_START.md)** 🎯 - Allure Reports - Guia Rápido
 - **[docs/ALLURE_GUIDE.md](docs/ALLURE_GUIDE.md)** 📈 - Allure Reports - Guia Completo
 - **[docs/COMO_USAR_TEST_EXPLORER.md](docs/COMO_USAR_TEST_EXPLORER.md)** - Test Explorer detalhado
 - **[docs/INTERFACES_GRAFICAS_TESTES.md](docs/INTERFACES_GRAFICAS_TESTES.md)** - Todas as interfaces disponíveis
-- **[SOLUCAO_ERROS.md](SOLUCAO_ERROS.md)** 🔧 - Solução de erros comuns
+- **[SOLUCAO_ERROS.md](docs/troubleshooting/SOLUCAO_ERROS.md)** 🔧 - Solução de erros comuns
+
+### 📖 Documentação Organizada
+
+A documentação está agora organizada em categorias em `docs/`:
+
+| Categoria | Descrição | Localização |
+|-----------|-----------|-------------|
+| 🚀 **Getting Started** | Guias para iniciantes e início rápido | [docs/getting-started/](docs/getting-started/) |
+| 📊 **Reporting** | Documentação de relatórios Allure | [docs/reporting/](docs/reporting/) |
+| 🔧 **Troubleshooting** | Soluções de problemas comuns | [docs/troubleshooting/](docs/troubleshooting/) |
+| 🏗️ **Architecture** | Documentação técnica e análises | [docs/architecture/](docs/architecture/) |
+
+**Ver índice completo:** [docs/INDEX.md](docs/INDEX.md) - Navegação completa por toda a documentação
+
+---
+
+## 🎯 Projetos Ativos
+
+O framework suporta **múltiplos projetos** organizados em `projects/`. Cada projeto tem seus próprios testes isolados.
+
+### 📧 SRS - Email Service (ATIVO)
+
+**46 testes BDD** cobrindo o serviço de email do middleware SRS:
+
+```bash
+# Executar todos os testes do SRS Email Service
+pytest projects/srs/middleware/email/tests/bdd/ -v
+
+# Apenas smoke tests
+pytest projects/srs/middleware/email/tests/bdd/ -m smoke -v
+
+# Com Allure report
+pytest projects/srs/middleware/email/tests/bdd/ --alluredir=reports/allure-results/srs
+allure serve reports/allure-results/srs
+```
+
+**Cobertura:**
+- ✅ 10 testes de API Keys (CRUD completo)
+- ✅ 10 testes de Templates (CRUD + variáveis)
+- ✅ 11 testes de Email Sending (sync, HTML, template, anexos)
+- ✅ 15 testes de Email Queue (async, bulk, scheduled, tracking)
+
+**Documentação:**
+- [Setup Completo](projects/srs/middleware/email/SETUP_COMPLETO.md)
+- [Importação Insomnia](projects/srs/middleware/email/INSOMNIA_IMPORT_SUMMARY.md)
+- [Guia Multi-Projeto](docs/architecture/MULTI_PROJECT_GUIDE.md)
+
+### 📚 Exemplos JSONPlaceholder
+
+Testes de exemplo e referência foram movidos para `_examples_jsonplaceholder/`:
+
+- 📝 Exemplos de API tests
+- 🥒 Exemplos de BDD features
+- 🖥️ Exemplos de UI tests com Page Objects
+- 📖 Material de aprendizado
+
+**Ver:** [_examples_jsonplaceholder/README.md](_examples_jsonplaceholder/README.md)
+
+### ➕ Adicionar Novo Projeto
+
+```bash
+# Criar estrutura
+mkdir -p projects/meu-projeto/tests/
+
+# Ver guia completo
+cat docs/architecture/MULTI_PROJECT_GUIDE.md
+```
+
+**Ver também:** [REORGANIZACAO_TESTES.md](REORGANIZACAO_TESTES.md) - Detalhes sobre a reorganização
 
 ---
 

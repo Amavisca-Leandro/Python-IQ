@@ -11,7 +11,15 @@ This module provides shared fixtures for test automation including:
 
 import logging
 import pytest
+import sys
+from pathlib import Path
 from typing import Generator
+
+# Ensure project root is in sys.path for imports to work
+# This is critical for VS Code Test Explorer to find core modules
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 from core.config.settings import get_settings, Settings
 from core.api.client import APIClient
@@ -19,11 +27,9 @@ from core.database.manager import DatabaseManager
 from core.database.factory import TestDataFactory, TestDataContext
 
 # Import metrics plugin hooks and test-specific fixtures
-# NOTE: tests.bdd.conftest is automatically loaded by pytest when running BDD tests
-# and should NOT be registered here to avoid "Plugin already registered" errors
+# NOTE: JSONPlaceholder fixtures moved to _examples_jsonplaceholder/
+# Only load core metrics plugin here
 pytest_plugins = [
-    "tests.jsonplaceholder.conftest_metrics",
-    "tests.jsonplaceholder.conftest",  # JSONPlaceholder client and fixtures
     "core.helpers.pytest_metrics_plugin",
 ]
 
@@ -361,42 +367,13 @@ def isolated_test_data(
 
 
 # ============================================================================
-# BDD CONTEXT FIXTURE (imported from tests.bdd.conftest for global availability)
+# BDD CONTEXT FIXTURE
 # ============================================================================
-
-# Import BDDContext class
-import sys
-from pathlib import Path
-bdd_conftest_path = Path(__file__).parent / "bdd" / "conftest.py"
-if bdd_conftest_path.exists():
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("bdd_conftest_module", bdd_conftest_path)
-    if spec and spec.loader:
-        bdd_conftest_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(bdd_conftest_module)
-        BDDContext = bdd_conftest_module.BDDContext
-
-
-@pytest.fixture(scope="function")
-def bdd_context(request):
-    """
-    Provide BDD context for sharing data between steps.
-
-    This fixture creates a new BDDContext instance for each test scenario,
-    ensuring data isolation between scenarios. The context is automatically
-    cleaned up after the scenario completes.
-
-    Scope: function - New context for each scenario
-
-    Yields:
-        BDDContext: Context object for the scenario
-    """
-    try:
-        context = BDDContext()
-        logger.info(f"BDD context created for test: {request.node.name}")
-        yield context
-    finally:
-        logger.debug(f"BDD context cleaned up for test: {request.node.name}")
+# NOTE: BDD context fixtures are now defined at the project level
+# (e.g., projects/srs/middleware/email/tests/bdd/conftest.py)
+# Each project defines its own BDDContext for isolation and customization.
+# The global bdd_context fixture has been removed to avoid import errors
+# from moved example tests.
 
 
 # ============================================================================
