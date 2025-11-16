@@ -93,3 +93,8 @@ temp/
 # OS
 Thumbs.db
 .DS_Store
+
+# Arquivos temporários específicos do projeto
+nul
+chemas
+h origin main
