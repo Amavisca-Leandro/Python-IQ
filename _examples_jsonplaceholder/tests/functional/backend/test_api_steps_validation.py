@@ -2,7 +2,7 @@
 Test file for validating API step definitions.
 
 This test file uses pytest-bdd to execute scenarios from the
-test_api_steps.feature file, validating that all API step definitions
+api_steps_validation.feature file, validating that all API step definitions
 work correctly with the existing fixtures.
 """
 
@@ -17,4 +17,4 @@ from tests.bdd.steps.api_steps import *  # noqa: F401, F403
 
 # Load all scenarios from the feature file
 # Path is relative to the bdd_features_base_dir configured in pytest.ini
-scenarios('api/test_api_steps.feature')
+scenarios('api/api_steps_validation.feature')
